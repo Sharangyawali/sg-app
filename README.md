@@ -59,7 +59,7 @@ SG-APP provides a rich set of decorators, similar to NestJS but with some custom
 
 ```bash
 npm install -g @sharangyawali/sg-cli
-sg-cli create-new test
+sg create-new test
 ```
 
 ---

@@ -1,10 +1,10 @@
 {
   "name": "@sharangyawali/sg-cli",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "main": "index.js",
   "type": "module",
   "bin": {
-    "sg-cli": "bin/cli.js"
+    "sg": "bin/cli.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -7,7 +7,7 @@ The official CLI for **SG-APP**, used to create and manage applications built on
 ## 📦 Installation
 
 ```bash
-npm install -g @Sharangyawali/sg-cli
+npm install -g @sharangyawali/sg-cli
 ```
 
 ## 🧱 Commands
@@ -17,7 +17,7 @@ npm install -g @Sharangyawali/sg-cli
 Creates a new application scaffolded with SG-APP.
 
 ```bash
-sg-cli create-new demo
+sg create-new demo
 ```
 
 2. generate
@@ -25,5 +25,5 @@ sg-cli create-new demo
 generate new module and updates imports and code accordingly
 
 ```bash
-sg-cli generate
+sg generate
 ```
