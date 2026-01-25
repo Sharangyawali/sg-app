@@ -1,0 +1,16 @@
+import { <%= Database %>DataSource } from './<%= database %>.datasource';
+import { Module, Scope } from '@sharangyawali/sg-app';
+import { IDatasource } from '../../../domain/datasource';
+import { <%= database %>Providers } from './providers';
+
+@Module({
+  providers: [
+    ...<%= database %>Providers,
+    {
+      token: IDatasource,
+      scope: Scope.SINGLETON,
+      useClass: <%= Database %>DataSource,
+    },
+  ],
+})
+export class <%= Database %>Module { }

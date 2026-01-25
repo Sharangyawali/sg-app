@@ -1,0 +1,30 @@
+import { DataSource, DataSourceOptions } from 'typeorm';
+import { AppLogger, ConfigService, ModuleProvider, Scope } from '@sharangyawali/sg-app';
+export const DATA_SOURCE_<%= DATABASE %> = 'DATA_SOURCE_<%= DATABASE %>';
+export const <%= database %>Providers: ModuleProvider[] = [
+  {
+    token: DATA_SOURCE_<%= DATABASE %>,
+    scope: Scope.SINGLETON,
+    inject: [ConfigService, AppLogger],
+    useFactory: async (
+      config: ConfigService,
+      logger: AppLogger,
+    ) => {
+      const configs: DataSourceOptions = {
+        type: '<%= database %>',
+        host: config.get('<%= DATABASE %>_HOST'),
+        port: Number(config.get('<%= DATABASE %>_PORT')),
+        username: config.get('<%= DATABASE %>_USER'),
+        password: config.get('<%= DATABASE %>_PASSWORD'),
+        database: config.get('<%= DATABASE %>_DB'),
+        synchronize: false,
+        logging: false,
+        entities: [__dirname + '/../../**/**/*.<%= database %>.entity{.ts,.js}'],
+      };
+      const dataSource = new DataSource(configs);
+      await dataSource.initialize();
+      logger.log('Database successfully connected ');
+      return dataSource;
+    },
+  },
+];

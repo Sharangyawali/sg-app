@@ -1,0 +1,8 @@
+import { Module } from "@sharangyawali/sg-app";
+
+@Module({
+  imports: [
+    // UseCase modules
+  ],
+})
+export class UseCaseModule {}

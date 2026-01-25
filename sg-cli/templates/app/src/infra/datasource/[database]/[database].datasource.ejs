@@ -1,0 +1,15 @@
+import { Component, Inject } from "@sharangyawali/sg-app";
+import { IDatasource } from "../../../domain/datasource";
+import { DataSource } from "typeorm";
+import { DATA_SOURCE_<%= DATABASE %> } from "./providers";
+
+@Component()
+export class <%= Database %>DataSource implements IDatasource {
+  public datasource: DataSource;
+  constructor(
+    @Inject(DATA_SOURCE_<%= DATABASE %>)
+    private _datasource: DataSource,
+  ) {
+    this.datasource = this._datasource;
+  }
+}

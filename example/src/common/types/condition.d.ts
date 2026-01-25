@@ -1,0 +1,3 @@
+export type ConditionType = {
+  [key: string]: any | any[];
+};

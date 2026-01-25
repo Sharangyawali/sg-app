@@ -1,0 +1,3 @@
+export interface IBaseUsecase<T> {
+  execute(...args: any): Promise<T>;
+}

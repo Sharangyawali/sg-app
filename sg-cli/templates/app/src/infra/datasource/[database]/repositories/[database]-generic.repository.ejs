@@ -1,0 +1,117 @@
+import { Component } from "@sharangyawali/sg-app";
+import { GenericRepository } from "../../../../domain/repositories";
+import { DataSource, QueryRunner, Repository } from "typeorm";
+import { ConditionType, PaginatedResponse, PaginationOptions, RelationType, Transactional } from "../../../../common/types";
+
+@Component()
+export class <%= Database %>GenericRepository<T> implements GenericRepository<T> {
+  protected _repository: Repository<T>;
+  protected _tableName: string;
+
+  constructor(
+    repository: Repository<T>,
+    protected readonly dataSource: DataSource,
+    protected readonly tableName: string,
+  ) {
+    this._repository = repository;
+    this._tableName = tableName;
+  }
+
+
+  async create(item: T): Promise<T> {
+    return this._repository.save(item);
+  }
+
+  async update(condition: ConditionType, item: object): Promise<T> {
+    await this._repository.update({ ...condition } as any, item)
+    return this._repository.findOneBy({ ...condition } as any);
+  }
+
+  async getAll(
+    condition?: ConditionType,
+    relations?: RelationType[] | RelationType,
+  ): Promise<T[]> {
+    return this._repository.find({
+      where: { ...condition as any },
+      relations: { ...relations } as any,
+    });
+  }
+
+  async getPaginated(
+    condition: ConditionType,
+    relations: RelationType[] | RelationType = {},
+    pagination?: PaginationOptions,
+  ): Promise<PaginatedResponse<T>> {
+    const page = pagination?.page || 1;
+    const limit = pagination?.limit || 10;
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await this._repository.findAndCount({
+      where: { ...condition as any },
+      skip,
+      take: limit,
+      relations: { ...relations } as any,
+      order: {
+        [pagination?.sortBy || 'id']: pagination?.sortOrder || 'DESC',
+      } as any,
+    });
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      data,
+      meta: {
+        currentPage: page,
+        itemsPerPage: limit,
+        totalItems: total,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
+      },
+    };
+  }
+
+  async getOneOrFalse(condition: object, relations?: RelationType[] | RelationType,): Promise<false | T> {
+    try {
+      const item = await this._repository.findOne({
+        where: { ...condition },
+        relations: { ...relations as any }
+      });
+      return item || false;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
+
+  async withTransaction<R>(
+    operation: (queryRunner: Transactional) => Promise<R>,
+  ): Promise<R> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const result = await operation(queryRunner);
+      await queryRunner.commitTransaction();
+      return result;
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw err;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+  saveWithRunner(
+    queryRunner: QueryRunner,
+    item: T,
+  ): Promise<T> {
+    return queryRunner.manager.getRepository(this._tableName).save(item);
+  }
+  saveMultipleWithRunner(
+    queryRunner: QueryRunner,
+    item: T[],
+  ): Promise<T[]> {
+    return queryRunner.manager.getRepository(this._tableName).save(item);
+  }
+}

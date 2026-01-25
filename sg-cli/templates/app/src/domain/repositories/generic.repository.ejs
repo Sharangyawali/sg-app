@@ -1,0 +1,25 @@
+import { ConditionType, PaginatedResponse, PaginationOptions, RelationType, Transactional } from "../../common/types";
+
+export interface GenericRepository<T> {
+  create(item: T): Promise<T>;
+  update(condition: ConditionType, item: object): Promise<T>;
+  getAll(
+    condition?: ConditionType,
+    relations?: RelationType[] | RelationType,
+  ): Promise<T[]>;
+  getPaginated(
+    condition?: ConditionType,
+    relations?: RelationType[] | RelationType,
+    pagination?: PaginationOptions,
+  ): Promise<PaginatedResponse<T>>;
+  getOneOrFalse(
+    condition: ConditionType,
+    relations?: RelationType[] | RelationType,
+  ): Promise<T | false>;
+  withTransaction<R>(operation: (transactional: Transactional) => Promise<R>): Promise<R>;
+  saveWithRunner(queryRunner: Transactional, item: T): Promise<T>;
+  saveMultipleWithRunner(
+    queryRunner: Transactional,
+    item: T[],
+  ): Promise<T[]>;
+}

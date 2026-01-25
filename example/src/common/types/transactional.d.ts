@@ -1,0 +1,4 @@
+export interface Transactional {
+  release(): Promise<void>;
+  query(query: string, parameters?: any[]): Promise<any>;
+}

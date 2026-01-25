@@ -1,0 +1,7 @@
+import { Module } from "@sharangyawali/sg-app";
+import { DemoController } from "./demo.controller";
+
+@Module({
+  controllers: [DemoController],
+})
+export class DemoControllerModule {}

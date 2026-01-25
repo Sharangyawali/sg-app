@@ -1,0 +1,15 @@
+import {
+  AppLogger,
+  ConfigService,
+  container,
+  SGFactory,
+} from "@sharangyawali/sg-app";
+import { AppModule } from "./app.module";
+async function bootstrap() {
+  const app = new SGFactory().create(AppModule, { cors: true });
+  const logger = await container.resolve(AppLogger);
+  const config: ConfigService = await container.resolve(ConfigService);
+  const port = Number(config.get("APP_PORT")) || 8000;
+  await app.listen(port, () => logger.log(`Listening on port ${port}`));
+}
+bootstrap();

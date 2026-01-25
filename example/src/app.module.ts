@@ -1,0 +1,8 @@
+import { Module } from "@sharangyawali/sg-app";
+import { InfraModule } from "./infra/infra.module";
+import { ApplicationModule } from "./application/application.module";
+
+@Module({
+  imports: [InfraModule, ApplicationModule],
+})
+export class AppModule {}

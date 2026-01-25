@@ -1,0 +1,7 @@
+import { Module } from '@sharangyawali/sg-app';
+import { <%= Database %>Module } from './<%= database %>/<%= database %>.module';
+
+@Module({
+  imports: [<%= Database %>Module],
+})
+export class DataSourceModule { }
