@@ -1,0 +1,17 @@
+{
+  "name": "<%= name %>",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "ts-node-dev src/main.ts","build": "tsc",
+    "start": "node dist/src/main.js",
+    "typeorm": "typeorm -d ./dist/db/<%= database %>/<%= database %>-migrations.js",
+    "migration:create": "npx typeorm-ts-node-commonjs migration:create",
+    "migration:run": "npm run typeorm migration:run",
+    "migration:revert": "npm run typeorm migration:revert",
+    "migration:generate": "npm run typeorm migration:generate"
+  },
+  "dependencies": {},
+  "devDependencies": {
+  }
+}
