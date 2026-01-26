@@ -1,0 +1,18 @@
+import { DataSource, DataSourceOptions } from "typeorm";
+import { config } from 'dotenv';
+config();
+
+const dataSourceOptions: DataSourceOptions = {
+    type: '<%= database %>',
+    host: process.env.<%= DATABASE %>_HOST,
+    port: Number(process.env.<%= DATABASE %>_PORT),
+    username: process.env.<%= DATABASE %>_USER,
+    password: process.env.<%= DATABASE %>_PASSWORD,
+    database: process.env.<%= DATABASE %>_DB,
+    entities: [__dirname + '/../../src/infra/datasource/<%= database %>/entities/*.<%= database %>.entity.{ts,js}'],
+    migrations: [__dirname + '/migrations/*.{ts,js}'],
+    migrationsTableName: 'migration',
+    synchronize: false,
+};
+
+export default new DataSource(dataSourceOptions);

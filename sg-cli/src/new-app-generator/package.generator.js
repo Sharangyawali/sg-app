@@ -9,12 +9,20 @@ const __dirname = path.dirname(__filename);
 
 export async function generatePackageJson(appName, dbName) {
   const root = path.join(process.cwd(), appName, "package.json");
-  const contents = await ejs.renderFile(
-    path.join(__dirname, "../../templates/app/package.json.ejs"),
-    {
-      name: appName,
-    },
-  );
+  const contents = dbName
+    ? await ejs.renderFile(
+        path.join(__dirname, "../../templates/app/typeorm-package.json.ejs"),
+        {
+          name: appName,
+          database: dbName,
+        },
+      )
+    : await ejs.renderFile(
+        path.join(__dirname, "../../templates/app/package.json.ejs"),
+        {
+          name: appName,
+        },
+      );
   await writeFile(root, contents);
   let dbPackage;
   if (dbName) {
