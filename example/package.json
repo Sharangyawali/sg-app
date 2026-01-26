@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "ts-node-dev src/main.ts",
     "build": "tsc",
-    "start": "node dist/main.js",
+    "start": "node dist/src/main.js",
     "typeorm": "typeorm -d ./dist/db/postgres/postgres-migrations.js",
     "migration:create": "npx typeorm-ts-node-commonjs migration:create",
     "migration:run": "npm run typeorm migration:run",
