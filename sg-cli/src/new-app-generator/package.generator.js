@@ -46,5 +46,7 @@ export async function generatePackageJson(appName, dbName) {
         `@sharangyawali/sg-app typeorm ${dbPackage} --save`,
       ])
     : await installPackages(appName, ["@sharangyawali/sg-app --save"]);
-  await installPackages(appName, ["typescript ts-node-dev --save-dev"]);
+  await installPackages(appName, [
+    "typescript ts-node-dev @types/express --save-dev",
+  ]);
 }

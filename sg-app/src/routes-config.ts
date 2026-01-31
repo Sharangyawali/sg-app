@@ -172,10 +172,12 @@ export class RoutRegister {
         } catch (error) {
           if (error instanceof HttpException) {
             await this.catchExceptions(httpContext, error);
-          } else {
-            console.log({ error })
-            res.status(500).json({ message: "Internal Server Error!!" });
           }
+          else {
+            console.log({ error })
+          }
+          if (!res.headersSent)
+            res.status(500).json({ message: "Internal Server Error!!" });
         }
         finally {
           container.removeRequest(cls.get('instanceId'))
@@ -210,7 +212,8 @@ export class RoutRegister {
       afterResponseInterceptor,
       data
     );
-    res.send(data);
+    if (!res.headersSent)
+      res.send(data);
   }
   private async registerGuards(
     guards: any[],
