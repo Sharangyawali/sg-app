@@ -22,7 +22,7 @@ import {
   SGMiddleware
 } from "./common";
 import { plainToInstance } from "class-transformer";
-import { validate } from "class-validator";
+import { getMetadataStorage, validate, ValidationError } from "class-validator";
 import { CLSService } from "./cls";
 import { container } from "./di-container";
 
@@ -170,14 +170,16 @@ export class RoutRegister {
             method
           );
         } catch (error) {
+          console.log({ error })
           if (error instanceof HttpException) {
             await this.catchExceptions(httpContext, error);
+            if (!res.headersSent)
+              res.status(error.statusCode).json({ ...error.message });
           }
           else {
-            console.log({ error })
+            if (!res.headersSent)
+              res.status(500).json({ message: "Internal Server Error!!" });
           }
-          if (!res.headersSent)
-            res.status(500).json({ message: "Internal Server Error!!" });
         }
         finally {
           container.removeRequest(cls.get('instanceId'))
@@ -281,11 +283,14 @@ export class RoutRegister {
           { ...paramData },
           { enableImplicitConversion: true }
         );
-        const errors = await validate(transformedClass, {
-          whitelist: true
-        });
+        let errors = []
+        if (getMetadataStorage().getTargetValidationMetadatas(dtoClass, '', false, false).length > 0)
+          errors = await validate(transformedClass, {
+            whitelist: true
+          });
+
         if (errors.length > 0) {
-          throw new HttpException(errors, 400);
+          throw new HttpException(this.reduceErrors(errors) || 'Validation error!!', 400);
         }
         transformedParameters.push(transformedClass);
       } else {
@@ -304,4 +309,23 @@ export class RoutRegister {
       await filterInstance.catch(error, httpContext);
     }
   }
+
+  private reduceErrors(errors: ValidationError[]): any {
+    return errors?.reduce((obj, item) => {
+      if (item.children?.length > 0) {
+        obj[item.property] = this.reduceErrors(item.children);
+      } else {
+        obj[item.property] = this.capitalizeFirstLetter(
+          Array.isArray(Object.values(item.constraints))
+            ? Object.values(item.constraints)[0]
+            : Object.values(item.constraints).toString(),
+        );
+      }
+      return obj;
+    }, {});
+  }
+
+  private capitalizeFirstLetter(string: string): string {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
 }
