@@ -13,11 +13,12 @@
     "migration:generate": "npm run typeorm migration:generate"
   },
   "dependencies": {
-    "@sharangyawali/sg-app": "^1.0.8",
-    "pg": "^8.17.2",
+    "@sharangyawali/sg-app": "^1.0.10",
+    "pg": "^8.18.0",
     "typeorm": "^0.3.28"
   },
   "devDependencies": {
+    "@types/express": "^5.0.6",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"
   }
